@@ -79,25 +79,12 @@
             </div>
             <div class="row pt-2">
               <div class="col-lg-4 offset-lg-1 pt-1">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>">
-              </div>
-              <div class="col-lg-4 pt-4">
-                <div class="form-check">
-                  <label class="form-check-label" for="arrl"> ARRL Member </label>
-                  <?php if(strtoupper($mem['arrl']) == 'TRUE') {?>
-                    <input class="form-check-input" type="checkbox" name="arrl" checked>
-                  <?php }
-                        else { ?>
-                    <input class="form-check-input" type="checkbox" name="arrl">
-                  <?php } ?>
-                </div>
-              </div>
-            </div>
-            <div class="row pt-2">
-              <div class="col-lg-4 offset-lg-1 pt-1">
                 <label for="address">Street</label>
                 <input type="text" class="form-control" name="address" value="<?php echo $mem['address']; ?>">
+              </div>
+              <div class="col-lg-4 pt-1">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>">
               </div>
             </div>
             <div class="row pt-2">
