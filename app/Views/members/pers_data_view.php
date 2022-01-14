@@ -13,6 +13,30 @@
               </div>
               <form action="<?php echo base_url() . '/index.php/update-mem/'. $mem['id_members']; ?>" method="post">
               <div class="row pt-2">
+                <div class="col-lg-3 offset-lg-1 pt-1">
+                  <div class="form-check">
+                    <label class="form-check-label" for="arrl"> Listing in Directory OK </label>
+                    <?php if(strtoupper($mem['dir_ok']) == 'TRUE') {?>
+                      <input class="form-check-input" type="checkbox" name="dir_ok" checked>
+                    <?php }
+                          else { ?>
+                      <input class="form-check-input" type="checkbox" name="dir_ok">
+                    <?php } ?>
+                  </div>
+                </div>
+                <div class="col-lg-3 offset-lg-1 pt-1">
+                  <div class="form-check">
+                    <label class="form-check-label" for="arrl"> ARRL Member </label>
+                    <?php if(strtoupper($mem['arrl']) == 'TRUE') {?>
+                      <input class="form-check-input" type="checkbox" name="arrl" checked>
+                    <?php }
+                          else { ?>
+                      <input class="form-check-input" type="checkbox" name="arrl">
+                    <?php } ?>
+                  </div>
+                </div>
+              </div>
+              <div class="row pt-2">
                 <div class="col-lg-4 offset-lg-1 pt-1">
                   <label for="fname">First Name</label>
                   <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $mem['fname']; ?>">

@@ -28,6 +28,7 @@ class Member_model extends Model {
       $elem['carrier'] = trim(strtoupper($member->hard_news));
       $elem['dir'] = trim(strtoupper($member->hard_dir));
       $elem['arrl'] =  trim(strtoupper($member->arrl_mem));
+      $elem['dir_ok'] =  trim(strtoupper($member->ok_mem_dir));
       $elem['mem_card'] = trim(strtoupper($member->mem_card));
       $member->h_phone == NULL ? $elem['h_phone'] = '000-000-0000' : $elem['h_phone'] = $member->h_phone;
       $member->w_phone == NULL ? $elem['w_phone'] = '000-000-0000' : $elem['w_phone'] = $member->w_phone;

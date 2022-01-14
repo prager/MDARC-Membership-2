@@ -73,6 +73,7 @@ class Member extends BaseController {
 			$param['w_phone'] = $this->request->getPost('w_phone');
 			$param['h_phone'] = $this->request->getPost('h_phone');
 			$email = $this->request->getPost('email');
+			$this->request->getPost('dir_ok') == 'on' ? $param['ok_mem_dir'] = 'TRUE' : $param['ok_mem_dir'] = 'FALSE';
 			filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 			$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
 			$this->mem_mod->update_mem($param);

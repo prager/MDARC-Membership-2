@@ -257,17 +257,17 @@ class Home extends BaseController {
     	$flags = $this->user_mod->load_password($param);
     	if(!(filter_var($param['email'], FILTER_VALIDATE_EMAIL))) {
         $data['title'] = 'Email Error!';
-        $data['msg'] = 'Enter a valid email. Please, go back and try again. Thank you!<br><br>';
+        $data['msg'] = '<p class="text-danger">Enter a valid email</p>. Please, go back and try again. Thank you!<br><br>';
         echo view('status/status_view', $data);
     	}
     	elseif(!$flags['flag']) {
         $data['title'] = 'Email Error!';
-        $data['msg'] = 'You entered a wrong email. Please, go back and try again. Thank you!<br><br>';
+        $data['msg'] = '<p class="text-danger">You entered a wrong email. Please, go back and try again.</p> Thank you!<br><br>';
         echo view('status/status_view', $data);
     	}
     	elseif(!$flags['db_flag']) {
         $data['title'] = 'DB Error!';
-        $data['msg'] = 'There was a DB error. Please, try again later. Thank you!<br><br>';
+        $data['msg'] = '<p class="text-danger">There was a DB error</p>. Please, try again later. Thank you!<br><br>';
         echo view('status/status_view', $data);
     	}
       else {
