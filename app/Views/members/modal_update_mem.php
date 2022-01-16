@@ -19,12 +19,12 @@
         </div>
         <div class="row">
           <div class="col-lg py-2">
-            <label for="fname">First Name</label>
-            <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter First Name">
+            <label for="fname">First Name (mod)</label>
+            <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter First Name" required>
           </div>
           <div class="col-lg py-2">
               <label for="lname">Last Name</label>
-              <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Last Name">
+              <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Last Name" required>
           </div>
           <div class="col-lg py-2">
               <label for="callsign">Callsign</label>
@@ -74,7 +74,7 @@
           </div>
           <div class="col-lg py-2">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="you@email.com">
+            <input type="email" class="form-control" id="email" name="email" placeholder="you@email.com" required>
           </div>
         </div>
         <div class="row mb-1">

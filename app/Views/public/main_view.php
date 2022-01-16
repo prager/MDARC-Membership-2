@@ -1,10 +1,10 @@
 
 
         <!-- Showcase -->
-        <section class="bg-light text-dark p-2 p-lg-5 text-center text-sm-start">
+        <section class="bg-light text-dark p-4 text-center text-sm-start">
             <div class="container">
-              <div class="row">&nbsp;</div>
-                <div class="d-sm-flex align-items-center justify-content-between">
+              <div class="row pt-5">&nbsp;</div>
+                <div class="d-sm-flex align-items-center justify-content-between pb-2">
                     <div>
                         <h1>MDARC <span class="text-warning">Membership Portal</span> </h1>
                         <p class="my-4">
@@ -57,10 +57,33 @@
             </div>
         </section>
 
-        <section id="learn" class="p-5 bg-light text-light">
+        <section class="bg-light">
             <div class="container">
                 <div class="row align-items-center justify-content-between">
-
-                </div>
+                  <div class="col-lg-6">
+                    <h2>Mount Diablo Amateur Radio Club</h2>
+                        <p class="lead">
+                            The Mount Diablo Amateur Radio Club (MDARC) was founded on January 9, 1947.
+                        </p>
+                        <p>
+                          MDARC provides a wide variety of programs and activities for its members. These include hosting and staffing PACIFICON (ARRL Pacific Division convention) each October, bringing in great speakers and offering ham radio classes to the public.
+                        </p>
+                  </div>
+                  <div class="col-lg-6">
+                    <div id="map">
+                    				<div id="googleMap" style="height: 310px; width: 100%; float: right">&nbsp;</div>
+                    					<script>
+                    					function myMap() {
+                      					var myCenter = new google.maps.LatLng(37.934490, -122.068848);
+                      					var mapProp = {center:myCenter, zoom:8};
+                      					var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+                      					var marker = new google.maps.Marker({position:myCenter});
+                      					marker.setMap(map);
+                    					}
+                    					</script>
+                    					<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeOLEmQMnt6O2kEXJ7llYr1xw2y-BEm6M&callback=myMap"></script>
+                              </div<!-- SB Forms JS from https://startbootstrap.com/guides/bootstrap-form-setup-guide-->
+                  <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+                  </div>
             </div>
         </section>

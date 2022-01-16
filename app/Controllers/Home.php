@@ -3,16 +3,43 @@
 namespace App\Controllers;
 
 class Home extends BaseController {
-    public function index() {
-  		echo view('template/header');
-  		if(!($this->login_mod->is_logged())) {
-  			echo view('public/main_view');
-  		}
-  		else {
-  			return redirect()->route($this->login_mod->get_cur_user()['controller']);
-  		}
-  		echo view('template/footer');
+  public function index() {
+		echo view('template/header');
+		if(!($this->login_mod->is_logged())) {
+			echo view('public/main_view');
+		}
+		else {
+			return redirect()->route($this->login_mod->get_cur_user()['controller']);
+		}
+		echo view('template/footer');
+  }
+
+  public function contact() {
+    echo view('template/header');
+    echo view('public/contact_view');
+    echo view('template/footer');
+  }
+
+  public function send_contact() {
+    echo view('template/header');
+    $param['fname'] = $this->request->getPost('fname');
+    $param['lname'] = $this->request->getPost('lname');
+    $param['email'] = $this->request->getPost('email');
+    $param['msg'] = $this->request->getPost('msg');
+    $flag = $this->home_mod->contact($param);
+    if($flag) {
+      $data['title'] = 'Message was sent!';
+      $data['msg'] = '<p class="text-danger">Your message was sent.</p> Thank you for visiting our web portal!.<br><br>';
+      echo view('status/status_view', $data);
     }
+    else {
+      $data['title'] = 'Error!';
+      $data['msg'] = '<p class="text-danger">There was an error.</p> Thank you for visiting our web portal!.<br><br>';
+      $data['msg'] .= 'fname: ' . $param['fname'];
+      echo view('status/status_view', $data);
+    }
+    echo view('template/footer');
+  }
 
 /**
 * Loads up the blank registration form
@@ -73,7 +100,6 @@ class Home extends BaseController {
     $param['facebook'] = $this->request->getPost('facebook');
     $param['twitter'] = $this->request->getPost('twitter');
     $param['linkedin'] = $this->request->getPost('linkedin');
-		//$param['id_user_type'] = $this->request->getPost('pos');
     $param['id_user_type'] = 0;
 
 		$email_flag = TRUE;
@@ -154,10 +180,6 @@ class Home extends BaseController {
     			echo view('public/change_pass_view', $data);
     	    echo view('template/footer');
     	}
-
-      public function set_user_pass() {
-
-      }
 
     	/**
     	* This is called by clicking on the emailed URL to confirm registration by setting up username and password

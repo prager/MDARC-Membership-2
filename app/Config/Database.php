@@ -26,7 +26,7 @@ class Database extends Config
     public $defaultGroup = 'default';
 
     /**
-     * The default database connection.
+     * The default database connection - mod.
      *
      * @var array
      */

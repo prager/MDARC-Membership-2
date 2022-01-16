@@ -52,6 +52,7 @@ class BaseController extends Controller
     		$this->user_mod = new \App\Models\User_model();
     		$this->mem_mod = new \App\Models\Member_model();
     		$this->staff_mod = new \App\Models\Staff_model();
+    		$this->home_mod = new \App\Models\Home_model();
     		$this->uri = $this->request->uri;
         // E.g.: $this->session = \Config\Services::session();
     }

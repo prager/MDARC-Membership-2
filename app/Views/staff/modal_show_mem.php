@@ -54,12 +54,12 @@
             <?php echo $mem['address'] . '<br>' . $mem['city'] . ', ' . $mem['state'] . ' ' . $mem['zip']; ?>
           </div>
         </div>
-        <div class="row mb-1">
+        <!--<div class="row mb-1">
           <div class="col py-2">
               <label for="comment">Comments</label><br>
-              <?php echo trim($mem['comment']); ?>
+              <?php //echo trim($mem['comment']); ?>
           </div>
-        </div>
+        </div>-->
       </section>
       </div>
       <div class="modal-footer">

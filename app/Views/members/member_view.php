@@ -36,11 +36,6 @@
                 </div>
             </div>
         </section>
+        <section class="p-5">
 
-        <section id="learn" class="p-5 bg-light text-light">
-            <div class="container">
-                <div class="row align-items-center justify-content-between">
-
-                </div>
-            </div>
         </section>

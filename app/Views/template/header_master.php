@@ -25,7 +25,7 @@
                   <a href="<?php echo base_url(); ?>" class="nav-link">Home</a>
               </li>
               <li class="nav-item">
-                  <a href="https://www.mdarc.org/about-us/contact-us" class="nav-link" target="_blank">Contact</a>
+                  <a href="<?php echo base_url() . '/index.php/contact'; ?>" class="nav-link">Contact</a>
               </li>
               <li class="nav-item">
                   <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#tech">About</a>

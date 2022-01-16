@@ -10,6 +10,7 @@
   <!-- Option 1: Include in HTML -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <link rel="shortcut icon" href="/img/mdarc-icon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/css/style.css">
   <title>MDARC Membership</title>
 </head>
 <body>
@@ -25,7 +26,7 @@
                   <a href="<?php echo base_url(); ?>" class="nav-link">Home</a>
               </li>
               <li class="nav-item">
-                  <a href="https://www.mdarc.org/about-us/contact-us" class="nav-link" target="_blank">Contact</a>
+                  <a href="<?php echo base_url() . '/index.php/contact'; ?>" class="nav-link">Contact</a>
               </li>
               <li class="nav-item">
                   <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#tech">About</a>

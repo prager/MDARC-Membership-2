@@ -18,15 +18,22 @@
        <?php include 'mod-confim-mem.php'; ?>
 
        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-       <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
        <script>
-           mapboxgl.accessToken = 'pk.eyJ1IjoibGVob3MyNCIsImEiOiJja3ZxM29qMDBlbzRmMnBtbmRsNTg4cHY3In0.aRRDqiYJVURWAR3hfX0-1g';
-           var map = new mapboxgl.Map({
-           container: 'map',
-           style: 'mapbox://styles/mapbox/streets-v11',
-           center: [-122.021819, 37.987936],
-           zoom: 12,
-           });
+              // Initialize and add the map
+              function initMap() {
+               // The location of Uluru
+               const uluru = { lat: 37.97741, lng: -122.05190 };
+               // The map, centered at Uluru
+               const map = new google.maps.Map(document.getElementById("map"), {
+                 zoom: 4,
+                 center: uluru,
+               });
+               // The marker, positioned at Uluru
+               const marker = new google.maps.Marker({
+                 position: uluru,
+                 map: map,
+               });
+              }
        </script>
    </body>
 </html>
