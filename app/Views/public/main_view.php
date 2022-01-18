@@ -63,7 +63,7 @@
                   <div class="col-lg-6">
                     <h2>Mount Diablo Amateur Radio Club</h2>
                         <p class="lead">
-                            The Mount Diablo Amateur Radio Club (MDARC) was founded on January 9, 1947.
+                            <a href="http://mdarc.org" class="text-decoration-none" target="_blank">The Mount Diablo Amateur Radio Club (MDARC)</a> was founded on January 9, 1947.
                         </p>
                         <p>
                           MDARC provides a wide variety of programs and activities for its members. These include hosting and staffing PACIFICON (ARRL Pacific Division convention) each October, bringing in great speakers and offering ham radio classes to the public.

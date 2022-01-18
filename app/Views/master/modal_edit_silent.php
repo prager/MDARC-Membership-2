@@ -26,7 +26,7 @@
             <div class="col">
               <button type="button" class="btn btn-light btn-sm"><?php echo anchor('unset-silent-key/' . $mem['id'], 'Un-Set Silent Key', 'class="text-decoration-none text-dark"')?></button>
             </div>
-          </div>      
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

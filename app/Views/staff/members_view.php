@@ -39,11 +39,11 @@
                       <thead>
                         <tr>
                           <th>Name</th>
-                          <th>Cur Yr</th>
+                          <th>Current Year</th>
                           <th>Mem Type</th>
                           <th>Callsign</th>
-                          <th>Lic</th>
-                          <th>Pay Dt</th>
+                          <th>License</th>
+                          <th>Pay Date</th>
                           <th>Mem Since</th>
                           <th>Email</th>
                         </tr>

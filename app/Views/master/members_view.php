@@ -174,8 +174,8 @@
                       <tbody>
                         <?php foreach($del_mems as $mem) {?>
                         <tr>
-                          <td><a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#editMem<?php echo $mem['id']; ?>"><?php echo $mem['lname'] . ', ' . $mem['fname']; ?></a></td>
-                          <?php include 'modal_update_mem.php'; ?>
+                          <td><a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#unDelMem<?php echo $mem['id']; ?>"><?php echo $mem['lname'] . ', ' . $mem['fname']; ?></a></td>
+                          <?php include 'mod_undel_mem.php'; ?>
                           <td><?php echo $mem['cur_year']; ?></td>
                            <td><?php echo $mem['mem_type']; ?></td>
                            <td><?php echo $mem['callsign']; ?></td>

@@ -206,24 +206,49 @@ class Member_model extends Model {
   }
 
   public function add_fam_mem($param) {
+    $retval = NULL;
+    if(!$this->check_dup($param)) {
+      $db      = \Config\Database::connect();
+      $builder = $db->table('tMembers');
+      $builder->resetQuery();
+      $mem_array = array('id_mem_types' => 2, 'mem_type' => 'Primary');
+      $builder->update($mem_array, ['id_members' => $param['parent_primary']]);
+      $builder->resetQuery();
+      $builder->where('id_members', $param['parent_primary']);
+      $mem_obj = $builder->get()->getRow();
+      $param['address'] = $mem_obj->address;
+      $param['city'] = $mem_obj->city;
+      $param['state'] = $mem_obj->state;
+      $param['zip'] = $mem_obj->zip;
+      $param['pay_date'] = $mem_obj->pay_date;
+      $param['cur_year'] = $mem_obj->cur_year;
+      $builder->resetQuery();
+      $builder = $db->table('tMembers');
+      $builder->resetQuery();
+      $builder->insert($param);
+      $db->close();
+    }
+    else {
+      $retval = '<p class="text-danger">This family member already exists in database.</p><br>';
+    }
+    return $retval;
+  }
+
+  /**
+  * Checks for duplicate family member
+  */
+  private function check_dup($param) {
+    $retval = FALSE;
     $db      = \Config\Database::connect();
     $builder = $db->table('tMembers');
-    $builder->resetQuery();
-    $mem_array = array('id_mem_types' => 2, 'mem_type' => 'Primary');
-    $builder->update($mem_array, ['id_members' => $param['parent_primary']]);
-    $builder->resetQuery();
-    $builder->where('id_members', $param['parent_primary']);
-    $mem_obj = $builder->get()->getRow();
-    $param['address'] = $mem_obj->address;
-    $param['city'] = $mem_obj->city;
-    $param['state'] = $mem_obj->state;
-    $param['zip'] = $mem_obj->zip;
-    $param['pay_date'] = $mem_obj->pay_date;
-    $builder->resetQuery();
-    $builder = $db->table('tMembers');
-    $builder->resetQuery();
-    $builder->insert($param);
-    $db->close();
+    $builder->where('lname', $param['lname']);
+    $builder->where('fname', $param['fname']);
+    $builder->where('mem_type', $param['mem_type']);
+    $builder->where('parent_primary', $param['parent_primary']);
+    if($builder->countAllResults() > 0) {
+      $retval = TRUE;
+    }
+    return $retval;
   }
 
   public function edit_fam_mem($param) {
@@ -241,10 +266,18 @@ class Member_model extends Model {
     $builder->where('id_members', $id);
     $id_prim = $builder->get()->getRow()->parent_primary;
     $builder->resetQuery();
-    $param = array('id_mem_types' => 1, 'mem_type' => 'Individual');
-    $builder->update($param, ['id_members' => $id_prim]);
+    $builder->where('id_members', $id_prim);
+    $id_usr = $builder->get()->getRow()->id_users;
     $builder->resetQuery();
+    $builder = $db->table('tMembers');
+    $builder->where('id_members', $id);
     $builder->delete(['id_members' => $id]);
+    $fams = $this->get_fam_mems($id_usr);
+    if(!$fams['fam_flag']) {
+      $builder->resetQuery();
+      $param = array('id_mem_types' => 1, 'mem_type' => 'Individual');
+      $builder->update($param, ['id_members' => $id_prim]);
+    }
   }
 
 }

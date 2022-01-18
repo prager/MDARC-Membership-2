@@ -40,6 +40,71 @@ class Master extends BaseController {
 		echo view('template/footer');
 	}
 
+	public function delete_mem() {
+		if($this->check_master()) {
+			$this->uri->setSilent();
+			$this->staff_mod->delete_mem($this->uri->getSegment(2));
+			$this->show_members();
+		}
+		else {
+			echo view('template/header');
+			$data['title'] = 'Authorization Error';
+			$data['msg'] = 'You may not be authorized to view this page. Go back and try again ' . anchor(base_url(), 'here'). '<br><br>';
+			echo view('status/status_view', $data);
+			echo view('template/footer');
+		}
+	}
+
+	public function un_delete_mem() {
+		if($this->check_master()) {
+			$this->uri->setSilent();
+			$this->staff_mod->un_delete_mem($this->uri->getSegment(2));
+			$this->show_members();
+		}
+		else {
+			echo view('template/header');
+			$data['title'] = 'Authorization Error';
+			$data['msg'] = 'You may not be authorized to view this page. Go back and try again ' . anchor(base_url(), 'here'). '<br><br>';
+			echo view('status/status_view', $data);
+			echo view('template/footer');
+		}
+	}
+
+	public function set_silent() {
+		if($this->check_master()) {
+			$this->uri->setSilent();
+			$param['id'] = $this->uri->getSegment(2);
+			$param['silent_date'] =  time();
+			$param['usr_type'] = 98;
+			$param['silent_year'] = date('Y', $param['silent_date']);
+			$this->staff_mod->set_silent($param);
+			$this->show_members();
+		}
+		else {
+			echo view('template/header');
+			$data['title'] = 'Authorization Error';
+			$data['msg'] = 'You may not be authorized to view this page. Go back and try again ' . anchor(base_url(), 'here'). '<br><br>';
+			echo view('status/status_view', $data);
+			echo view('template/footer');
+		}
+	}
+
+	public function unset_silent() {
+		if($this->check_master()) {
+			$this->uri->setSilent();
+			$this->staff_mod->unset_silent($this->uri->getSegment(2));
+			$this->show_members();
+		}
+		else {
+			echo view('template/header');
+			$data['title'] = 'Authorization Error';
+			$data['msg'] = 'You may not be authorized to view this page. Go back and try again ' . anchor(base_url(), 'here'). '<br><br>';
+			echo view('status/status_view', $data);
+			echo view('template/footer');
+		}
+	}
+
+
 		public function edit_mem() {
 				if($this->check_master()) {
 					echo view('template/header_master');
@@ -95,20 +160,17 @@ class Master extends BaseController {
 
 		public function purge_mem() {
 			if($this->check_master()) {
-				echo view('template/header_staff');
 				$this->uri->setSilent();
 				$this->staff_mod->purge_mem($this->uri->getSegment(2));
-				$param['states'] = $this->data_mod->get_states_array();
-				$param['lic'] = $this->data_mod->get_lic();
-				echo view('staff/members_view', $this->staff_mod->get_mems($param));
+				$this->show_members();
 			}
 			else {
 				echo view('template/header');
 				$data['title'] = 'Authorization Error';
 				$data['msg'] = 'You may not be authorized to view this page. Go back and try again ' . anchor(base_url(), 'here'). '<br><br>';
 				echo view('status/status_view', $data);
+				echo view('template/footer');
 			}
-			echo view('template/footer');
 		}
 			public function add_fam_mem() {
 				if($this->check_master()) {

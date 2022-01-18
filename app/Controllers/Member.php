@@ -38,8 +38,6 @@ class Member extends BaseController {
 			$data['user'] = $this->login_mod->get_cur_user();
 			$mem_arr = $this->mem_mod->get_mem($data['user']['id_user']);
 			$data['mem'] = $mem_arr['primary'];
-			//echo '<br><br><br><br><br>';
-			//echo print_r($data['primary']);
 			$data['fam_arr'] = $this->mem_mod->get_fam_mems($data['user']['id_user']);
 			$data['member_types'] = $this->master_mod->get_member_types();
 			$data['states'] = $this->data_mod->get_states_array();
@@ -111,8 +109,17 @@ class Member extends BaseController {
 			$email = $this->request->getPost('email');
 			filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 			$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
-			$this->mem_mod->add_fam_mem($param);
-			$this->index();
+			$ret_str = $this->mem_mod->add_fam_mem($param);
+			if($ret_str == NULL) {
+				$this->index();
+			}
+			else {
+				echo view('template/header_member');
+	      $data['title'] = 'Error!';
+	      $data['msg'] = $ret_str;
+	      echo view('status/status_view.php', $data);
+				echo view('template/footer');
+			}
 		}
 		else {
 			echo view('template/header');
@@ -120,6 +127,7 @@ class Member extends BaseController {
       $data['title'] = 'Login Error';
       $data['msg'] = 'There was an error while checking your credentials.<br><br>';
       echo view('status/status_view.php', $data);
+			echo view('template/footer');
 		}
 	}
 		public function edit_fam_mem() {
