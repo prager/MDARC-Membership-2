@@ -6,7 +6,7 @@ class Home extends BaseController {
   public function index() {
 		echo view('template/header');
 		if(!($this->login_mod->is_logged())) {
-			echo view('public/main_view');
+			echo view('public/main_view', array('msg' => ''));
 		}
 		else {
 			return redirect()->route($this->login_mod->get_cur_user()['controller']);
@@ -307,7 +307,7 @@ class Home extends BaseController {
     	public function logout() {
     		$this->login_mod->logout();
     		echo view('template/header');
-    		echo view('public/main_view');
+    		echo view('public/main_view', array('msg' => '<p class="text-success">You have been logged out.<br><small>For your security make sure you close out your browser</small></p>'));
     		echo view('template/footer');
     	}
 

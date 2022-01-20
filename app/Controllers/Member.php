@@ -74,10 +74,23 @@ class Member extends BaseController {
 			$this->request->getPost('dir_ok') == 'on' ? $param['ok_mem_dir'] = 'TRUE' : $param['ok_mem_dir'] = 'FALSE';
 			filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 			$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
-			$this->mem_mod->update_mem($param);
-	  	echo view('template/header_member.php');
-			$data['title'] = 'Good To Go!';
-      $data['msg'] = '<p class="text-danger fw-bold">Your data were successfully updated. </p><p>Thank you for being a loyal MDARC Member!</p><br>';
+
+			$update_arr = $this->mem_mod->update_mem($param);
+			echo view('template/header_member.php');
+
+			if(count($update_arr) > 0) {
+				$val_str = '';
+				foreach ($update_arr as $key => $value) {
+					$val_str .= $value;
+				}
+				$data['title'] = 'Error(s)';
+				$data['msg'] = $val_str;
+			}
+			else {
+				$data['title'] = 'Success!';
+				$data['msg'] = '<p class="text-danger fw-bold">Your changes have been saved<br>';
+			}
+
 			//$data['msg'] .= 'Id: ' . $param['id'];
       echo view('status/status_view.php', $data);
 		}
@@ -109,17 +122,20 @@ class Member extends BaseController {
 			$email = $this->request->getPost('email');
 			filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 			$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
+			$this->request->getPost('dir_ok') == 'on' ? $param['ok_mem_dir'] = 'TRUE' : $param['ok_mem_dir'] = 'FALSE';
 			$ret_str = $this->mem_mod->add_fam_mem($param);
+
+			echo view('template/header_member');
 			if($ret_str == NULL) {
-				$this->index();
+				$data['title'] = 'Success!';
+				$data['msg'] = '<p class="text-danger fw-bold">Your changes have been saved<br>';
 			}
 			else {
-				echo view('template/header_member');
 	      $data['title'] = 'Error!';
 	      $data['msg'] = $ret_str;
-	      echo view('status/status_view.php', $data);
-				echo view('template/footer');
 			}
+			echo view('status/status_view.php', $data);
+			echo view('template/footer');
 		}
 		else {
 			echo view('template/header');
@@ -138,8 +154,10 @@ class Member extends BaseController {
 				$param['fname'] = $this->request->getPost('fname');
 				$param['lname'] = trim($this->request->getPost('lname'));
 				$param['license'] = $this->request->getPost('sel_lic');
-				$param['w_phone'] = $this->request->getPost('w_phone');
-				$param['h_phone'] = $this->request->getPost('h_phone');
+				$w_phone = $this->mem_mod->do_phone($this->request->getPost('w_phone'));
+				$h_phone = $this->mem_mod->do_phone($this->request->getPost('h_phone'));
+				$param['w_phone'] = $w_phone['phone'];
+				$param['h_phone'] = $h_phone['phone'];
 				$param['id_mem_types'] = $this->request->getPost('mem_types');
 				$param['mem_type'] = $this->staff_mod->get_mem_types()[$param['id_mem_types']];
 				$param['active'] = TRUE;
@@ -147,8 +165,32 @@ class Member extends BaseController {
 				$email = $this->request->getPost('email');
 				filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 				$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
+				$this->request->getPost('dir_ok') == 'on' ? $param['ok_mem_dir'] = 'TRUE' : $param['ok_mem_dir'] = 'FALSE';
 				$this->mem_mod->edit_fam_mem($param);
-				$this->index();
+
+				$data['msg'] ='';
+				$flag = TRUE;
+				echo view('template/header_member');
+				if(!$w_phone['flag']){
+					$data['msg'] .= '<p class="text-danger fw-bold">Cell phone was in wrong format and was not saved.</p>';
+					$flag = FALSE;
+				}
+
+				if(!$h_phone['flag']) {
+					$data['msg'] .= '<p class="text-danger fw-bold">Other phone number was in wrong format and was not saved.</p>';
+					$flag = FALSE;
+				}
+
+				if($flag) {
+					$data['title'] = 'Success!';
+					$data['msg'] = '<p class="text-danger fw-bold">Your changes have been saved<br>';
+				}
+				else {
+					$data ['title'] = 'Error!';
+				}
+				echo view('status/status_view.php', $data);
+				echo view('template/footer');
+
 			}
 			else {
 				echo view('template/header');
@@ -162,8 +204,6 @@ class Member extends BaseController {
   public function check_mem() {
 		$retval = FALSE;
 		$user_arr = $this->login_mod->get_cur_user();
-		//echo 'type code ' . $user_arr['type_code'] . '<br>';
-		//echo 'auth ' . $user_arr['authorized'] . '<br>';
 		if((($user_arr != NULL) && ($user_arr['type_code'] == 99)) || (($user_arr['authorized'] == 1) && ($user_arr['type_code'] < 90))) {
 			$retval = TRUE;
 		}

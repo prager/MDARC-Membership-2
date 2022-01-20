@@ -3,12 +3,18 @@
         <!-- Showcase -->
         <section class="bg-light text-dark p-4 text-center text-sm-start">
             <div class="container">
-              <div class="row pt-5">&nbsp;</div>
-                <div class="d-sm-flex align-items-center justify-content-between pb-2">
+              <?php if(strlen($msg) > 0) {?>
+              <div class="row pt-5">
+                <div class="col">
+                  <?php echo $msg; ?>
+                </div>
+              </div>
+            <?php }?>
+                <div class="d-sm-flex align-items-center justify-content-between pt-5 pb-3">
                     <div>
                         <h1>MDARC <span class="text-warning">Membership Portal</span> </h1>
                         <p class="my-4">
-                          <span class="text-danger">This website is in its early stage of development</span>. It is intended for MDARC members to check on their membership status and later will provide payment gateway, among others. In case anoyone would like to participate in the portal testing, then please provide your MDARC registered email and submit below.
+                          <span class="text-danger">This website is in its early stage of development</span>. It is intended for MDARC members to check on their membership status and later will provide payment gateway, among others. In case anyone would like to participate in the portal testing, then, please, provide your MDARC registered email and submit below.
                         </p>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login"> User Login </button>
                     </div>

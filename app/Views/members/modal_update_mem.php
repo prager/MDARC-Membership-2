@@ -2,7 +2,8 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addFamMemLabel">Add Family Member</h5>
+        <h5 class="modal-title" id="addFamMemLabel">Add Family Member</h5> &nbsp;
+        <small>(* marks required fields)</small>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
     </form>
@@ -10,20 +11,26 @@
       <div class="modal-body">
       <section class="px-2">
         <div class="row pt-2">
-          <div class="col-lg-3 p-3">
+          <div class="col-lg-4 p-3">
             <div class="form-check">
               <label class="form-check-label" for="arrl"> ARRL Member </label>
               <input class="form-check-input" type="checkbox" name="arrl" />
             </div>
           </div>
+          <div class="col-lg-4 p-3">
+            <div class="form-check">
+              <label class="form-check-label" for="dir_ok"> List in Directory OK </label>
+              <input class="form-check-input" type="checkbox" name="dir_ok" />
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-lg py-2">
-            <label for="fname">First Name (mod)</label>
+            <label for="fname">First Name *</label>
             <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter First Name" required>
           </div>
           <div class="col-lg py-2">
-              <label for="lname">Last Name</label>
+              <label for="lname">Last Name *</label>
               <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Last Name" required>
           </div>
           <div class="col-lg py-2">
@@ -37,7 +44,7 @@
             <select class="form-select" name="sel_lic">
               <?php
                 foreach($lic as $license) {
-                  if($license == 'Technician') { ?>
+                  if($license == 'SWL') { ?>
                     <option value="<?php echo $license; ?>" selected><?php echo $license; ?></option>
               <?php    }
                   else { ?>
@@ -52,10 +59,10 @@
             <select class="form-select" name="mem_types">
               <?php
                 foreach($member_types as $type) {
-                  if($type['id'] == 4) {?>
+                  if($type['id'] == 3) {?>
                     <option value="<?php echo $type['id']; ?>" selected><?php echo $type['description']; ?></option>
                   <?php }
-                  elseif($type['id'] == 3) { ?>
+                  elseif($type['id'] == 4) { ?>
                     <option value="<?php echo $type['id']; ?>"><?php echo $type['description']; ?></option>
               <?php  }
                 }
@@ -73,7 +80,7 @@
             <input type="text" class="form-control" id="h_phone" name="h_phone" placeholder="000-000-0000">
           </div>
           <div class="col-lg py-2">
-            <label for="email">Email</label>
+            <label for="email">Email *</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="you@email.com" required>
           </div>
         </div>

@@ -106,6 +106,10 @@ class Member_model extends Model {
     $db      = \Config\Database::connect();
     $builder = $db->table('tMembers');
     $builder->resetQuery();
+    $w_phone = $this->do_phone($param['w_phone']);
+    $h_phone = $this->do_phone($param['h_phone']);
+    $param['w_phone'] = $w_phone['phone'];
+    $param['h_phone'] = $h_phone['phone'];
     $builder->update($param, ['id_members' => $id]);
     $builder->resetQuery();
     $builder->where('id_members', $id);
@@ -124,6 +128,18 @@ class Member_model extends Model {
       $builder->resetQuery();
       $builder->update($usr_array, ['id_user' => $id_usr]);
     }
+
+    $retarr = array();
+
+    if(!$w_phone['flag']) {
+      $retarr['cell'] = '<p class="text-danger fw-bold">Cell number entered in wrong format and was not saved. </p>';
+    }
+
+     if(!$h_phone['flag']) {
+       $retarr['phone'] = '<p class="text-danger fw-bold">Other phone number entered in wrong format and was not saved. </p>';
+     }
+
+    return $retarr;
   }
 
   public function get_fam_mems($id) {
@@ -181,6 +197,7 @@ class Member_model extends Model {
       $member->zip == NULL ? $elem['zip'] = 'N/A' : $elem['zip'] = $member->zip;
       $elem['active'] = $member->active;
       $member->cur_year == NULL ? $elem['cur_year'] = 'N/A' : $elem['cur_year'] = $member->cur_year;
+      $elem['id_mem_types'] = $member->id_mem_types;
       $elem['mem_type'] = $member->mem_type;
       $elem['callsign'] = $member->callsign;
       $elem['license'] = $member->license;
@@ -229,7 +246,7 @@ class Member_model extends Model {
       $db->close();
     }
     else {
-      $retval = '<p class="text-danger">This family member already exists in database.</p><br>';
+      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
     }
     return $retval;
   }
@@ -280,4 +297,33 @@ class Member_model extends Model {
     }
   }
 
+  /**
+  * Converts number string into phone format
+  * Inspired by: https://www.geeksforgeeks.org/how-to-format-phone-numbers-in-php/
+  * - that didn't work!!!
+  * Instead the second option: https://www.delftstack.com/howto/php/php-format-phone-number/
+  */
+    public function do_phone($phone) {
+      $number = preg_replace("/[^0-9]/", "", $phone);
+      $retarr = array();
+      $retarr['phone'] = "";
+      $retarr['flag'] = TRUE;
+      //echo '<br><br><br><br>';
+      if(strlen($number) == 11) {
+        $retarr['phone'] = sprintf("%s-%s-%s",
+            substr($number, 1, 3),
+            substr($number, 4, 3),
+            substr($number, 7));
+      }
+      elseif(strlen($number) == 10) {
+        $retarr['phone'] = sprintf("%s-%s-%s",
+            substr($number, 0, 3),
+            substr($number, 3, 3),
+            substr($number, 6));
+      }
+      else{
+        $retarr['flag'] = FALSE;
+      }
+      return $retarr;
+    }
 }

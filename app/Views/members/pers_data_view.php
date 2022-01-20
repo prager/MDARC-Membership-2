@@ -4,6 +4,7 @@
     <div class="row pt-5">
       <div class="col offset-lg-1">
         <h2>Edit Data for: <?php echo $mem['fname'] . ' ' . $mem['lname']; ?></h2>
+        <small>(* marks required fields)</small>
         <?php
           if($msg != "") {
             echo '<p class="text-danger">' . $msg . '</p>';
@@ -38,12 +39,12 @@
       </div>
     <div class="row pt-2">
       <div class="col-lg-4 offset-lg-1 pt-1">
-        <label for="fname">First Name</label>
-        <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $mem['fname']; ?>">
+        <label for="fname">First Name *</label>
+        <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $mem['fname']; ?>" required>
       </div>
     <div class="col-lg-4 pt-1">
-      <label for="lname">Last Name</label>
-      <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $mem['lname']; ?>">
+      <label for="lname">Last Name *</label>
+      <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $mem['lname']; ?>" required>
     </div>
   </div>
   <div class="row pt-2">
@@ -79,23 +80,23 @@
   </div>
   <div class="row pt-2">
     <div class="col-lg-4 offset-lg-1 pt-1">
-      <label for="email">Email</label>
-      <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>">
+      <label for="email">Email *</label>
+      <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>" required>
     </div>
   </div>
   <div class="row pt-2">
     <div class="col-lg-4 offset-lg-1 pt-1">
-      <label for="address">Street</label>
-      <input type="text" class="form-control" name="address" value="<?php echo $mem['address']; ?>">
+      <label for="address">Street *</label>
+      <input type="text" class="form-control" name="address" value="<?php echo $mem['address']; ?>" required>
     </div>
   </div>
   <div class="row pt-2">
     <div class="col-lg-4 offset-lg-1 pt-1">
-      <label for="city">City</label>
-      <input type="text" class="form-control" id="city" name="city" value="<?php echo $mem['city']; ?>">
+      <label for="city">City *</label>
+      <input type="text" class="form-control" id="city" name="city" value="<?php echo $mem['city']; ?>" required>
     </div>
     <div class="col-lg-2 pt-1">
-      <label for="callsign">State</label>
+      <label for="callsign">State *</label>
       <select class="form-select" name="state" aria-label="Default select example">
         <?php
           foreach($states as $state) {
@@ -111,8 +112,8 @@
       </select>
     </div>
     <div class="col-lg-2 pt-1">
-      <label for="zip">Zip</label>
-      <input type="text" class="form-control" id="zip" name="zip" value="<?php echo $mem['zip']; ?>">
+      <label for="zip">Zip *</label>
+      <input type="text" class="form-control" id="zip" name="zip" value="<?php echo $mem['zip']; ?>" required>
     </div>
   </div>
   <?php if($fam_arr['fam_flag']) {?>
@@ -136,7 +137,7 @@
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="editFamMemLabel">Edit Family Member</h5>
+                  <h5 class="modal-title" id="editFamMemLabel">Edit Family Member</h5> &nbsp; <small>(* marks required fields)</small>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
               </form>
@@ -144,7 +145,7 @@
                 <div class="modal-body">
                 <section class="px-2">
                   <div class="row pt-2">
-                    <div class="col-lg-3 p-3">
+                    <div class="col-lg-4 p-3">
                       <div class="form-check">
                         <label class="form-check-label" for="arrl"> ARRL Member </label>
                         <?php if(strtoupper($fam_mem['arrl']) == 'TRUE') {?>
@@ -155,14 +156,25 @@
                         <?php } ?>
                       </div>
                     </div>
+                    <div class="col-lg-4 p-3">
+                      <div class="form-check">
+                        <label class="form-check-label" for="dir_ok"> List in Directory OK </label>
+                        <?php if(strtoupper($fam_mem['ok_mem_dir']) == 'TRUE') {?>
+                          <input class="form-check-input" type="checkbox" name="dir_ok" checked>
+                        <?php }
+                              else { ?>
+                          <input class="form-check-input" type="checkbox" name="dir_ok">
+                        <?php } ?>
+                      </div>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-lg py-2">
-                      <label for="fname">First Name</label>
+                      <label for="fname">First Name *</label>
                       <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $fam_mem['fname']; ?>">
                     </div>
                     <div class="col-lg py-2">
-                        <label for="lname">Last Name</label>
+                        <label for="lname">Last Name *</label>
                         <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $fam_mem['lname']; ?>">
                     </div>
                     <div class="col-lg py-2">
@@ -190,15 +202,14 @@
                       <label for="sel_lic">Member Type</label>
                       <select class="form-select" name="mem_types">
                         <?php
-                          foreach($member_types as $type) {
-                            if($type['id'] == 4) {?>
-                              <option value="<?php echo $type['id']; ?>" selected><?php echo $type['description']; ?></option>
-                            <?php }
-                            elseif($type['id'] == 3) { ?>
-                              <option value="<?php echo $type['id']; ?>"><?php echo $type['description']; ?></option>
+                          if($fam_mem['id_mem_types'] == 3) { ?>
+                            <option value="3" selected>Spouse</option>
+                            <option value="4">Additional</option>
                         <?php  }
-                          }
-                        ?>
+                          else { ?>
+                              <option value="4" selected>Additional</option>
+                              <option value="3">Spouse</option>
+                        <?php }  ?>
                       </select>
                     </div>
                   </div>
@@ -208,11 +219,11 @@
                       <input type="text" class="form-control" id="w_phone" name="w_phone" value="<?php echo $fam_mem['w_phone']; ?>">
                     </div>
                     <div class="col-lg py-2">
-                      <label for="h_phone">Home Phone</label>
+                      <label for="h_phone">Other Phone</label>
                       <input type="text" class="form-control" id="h_phone" name="h_phone" value="<?php echo $fam_mem['h_phone']; ?>">
                     </div>
                     <div class="col-lg py-2">
-                      <label for="email">Email</label>
+                      <label for="email">Email *</label>
                       <input type="email" class="form-control" id="email" name="email" value="<?php echo $fam_mem['email']; ?>">
                     </div>
                   </div>

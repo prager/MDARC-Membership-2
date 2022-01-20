@@ -292,4 +292,28 @@ public function put_user_types() {
     $db->close();
   }
 
+/**
+* Converts number string into phone format
+* Inspired by: https://www.geeksforgeeks.org/how-to-format-phone-numbers-in-php/
+*/
+  public function do_phone($phone) {
+
+    $retarr = array();
+    $retarr['flag'] = TRUE;
+
+    // Pass phone number in preg_match function
+    if(preg_match('/^\+[0-9]([0-9]{3})([0-9]{3})([0-9]{4})$/', $phone, $value)) {
+        // Store value in format variable
+        $format = $value[1] . '-' . $value[2] . '-' . $value[3];
+    }
+    else {
+        // If given number is invalid
+        $retarr['flag'] = FALSE;
+    }
+    $retarr['phone'] = $format;
+    // Print the given format
+    //echo("$format" . "<br>");
+    return $retarr;
+  }
+
 }

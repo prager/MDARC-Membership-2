@@ -15,6 +15,12 @@
                               else { ?>
                           <input class="form-check-input" type="checkbox" name="arrl" disabled>
                         <?php } ?><br>
+                        List in Directory OK: <?php if(strtoupper($primary['ok_mem_dir']) == 'TRUE') {?>
+                          <input class="form-check-input" type="checkbox" name="dir_ok" checked disabled>
+                        <?php }
+                              else { ?>
+                          <input class="form-check-input" type="checkbox" name="dir_ok" disabled>
+                        <?php } ?><br>
                         Last Payment: <?php echo $primary['pay_date']; ?><br>
                         Current Year: <?php echo $primary['cur_year']; ?><br>
                         Email: <?php echo $primary['email']; ?><br>
