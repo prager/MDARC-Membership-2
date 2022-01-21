@@ -224,7 +224,22 @@ class Member_model extends Model {
 
   public function add_fam_mem($param) {
     $retval = NULL;
-    if(!$this->check_dup($param)) {
+
+    $dups = $this->check_dup($param);
+
+    $flag = TRUE;
+
+    if($dups['fam_mem']) {
+      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
+      $flag = FALSE;
+    }
+
+    if($dups['callsign']) {
+      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This callsign already exists in database.</p>' : $retval .= '<p class="text-danger fw-bold">This callsign already exists in database.</p>';
+      $flag = FALSE;
+    }
+
+    if($flag) {
       $db      = \Config\Database::connect();
       $builder = $db->table('tMembers');
       $builder->resetQuery();
@@ -245,36 +260,111 @@ class Member_model extends Model {
       $builder->insert($param);
       $db->close();
     }
-    else {
-      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
-    }
+
     return $retval;
   }
 
   /**
-  * Checks for duplicate family member
+  * Checks for duplicate family member and callsign
   */
   private function check_dup($param) {
-    $retval = FALSE;
     $db      = \Config\Database::connect();
     $builder = $db->table('tMembers');
     $builder->where('lname', $param['lname']);
     $builder->where('fname', $param['fname']);
     $builder->where('mem_type', $param['mem_type']);
     $builder->where('parent_primary', $param['parent_primary']);
-    if($builder->countAllResults() > 0) {
-      $retval = TRUE;
+
+    $retarr = array();
+
+//check for duplicate family member
+    $builder->countAllResults() > 0 ? $retarr['fam_mem'] = TRUE : $retarr['fam_mem'] = FALSE;
+
+//check for duplicate callsign
+    $retarr['callsign'] = FALSE;
+    $sum = 0;
+    if($param['callsign'] == '') {$sum++;}
+    if(strtolower($param['callsign']) == 'none'){$sum++;}
+    if(strtolower($param['callsign']) == 'swl'){$sum++;}
+
+    //if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
+    if($sum == 0) {
+      $builder->resetQuery();
+      $builder->where('callsign', $param['callsign']);
+      $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
     }
-    return $retval;
+
+
+    return $retarr;
+  }
+
+  /**
+  * Checks for second duplicate family member when editing
+  */
+  private function check_second_dup($param) {
+
+    $db      = \Config\Database::connect();
+    $builder = $db->table('tMembers');
+    $builder->where('lname', $param['lname']);
+    $builder->where('fname', $param['fname']);
+    $builder->where('mem_type', $param['mem_type']);
+    $builder->where('parent_primary', $param['parent_primary']);
+
+    $retarr = array();
+
+//check for duplicate family member
+    $builder->countAllResults() > 1 ? $retarr['fam_mem'] = TRUE : $retarr['fam_mem'] = FALSE;
+
+//check for duplicate callsign
+    $retarr['callsign'] = FALSE;
+    $sum = 0;
+    if($param['callsign'] == '') {$sum++;}
+    if(strtolower($param['callsign']) == 'none'){$sum++;}
+    if(strtolower($param['callsign']) == 'swl'){$sum++;}
+
+    //if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
+    if($sum == 0) {
+      $builder->resetQuery();
+      $builder->where('callsign', $param['callsign']);
+      $builder->countAllResults() > 1 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
+    }
+
+    return $retarr;
   }
 
   public function edit_fam_mem($param) {
-    $db      = \Config\Database::connect();
-    $builder = $db->table('tMembers');
+// figure parent_primary
     $id = $param['id'];
     unset($param['id']);
-    $builder->resetQuery();
-    $builder->update($param, ['id_members' => $id]);
+
+//figure parent_primary for the duplicate check
+    $db      = \Config\Database::connect();
+    $builder = $db->table('tMembers');
+    $builder->where('id_members', $id);
+    $member = $builder->get()->getRow();
+    $param['parent_primary'] = $member->parent_primary;
+
+    $dups = $this->check_second_dup($param);
+    $flag = TRUE;
+    $retval = '';
+
+    if($dups['fam_mem']) {
+      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
+      $flag = FALSE;
+    }
+
+    if($dups['callsign']) {
+      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This callsign already exists in database.</p>' : $retval .= '<p class="text-danger fw-bold">This callsign already exists in database.</p>';
+      $flag = FALSE;
+    }
+
+    if($flag) {
+      $builder->resetQuery();
+      $builder->update($param, ['id_members' => $id]);
+    }
+
+    $db->close();
+    return $retval;
   }
 
   public function delete_fam_mem($id) {

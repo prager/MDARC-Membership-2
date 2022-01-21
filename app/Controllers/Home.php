@@ -307,7 +307,7 @@ class Home extends BaseController {
     	public function logout() {
     		$this->login_mod->logout();
     		echo view('template/header');
-    		echo view('public/main_view', array('msg' => '<p class="text-success">You have been logged out.<br><small>For your security make sure you close out your browser</small></p>'));
+    		echo view('public/main_view', array('msg' => '<p class="text-success">You have succesfuly logged out. Thank you and have a great day!<br><small>For your security make sure you close out your browser</small></p>'));
     		echo view('template/footer');
     	}
 

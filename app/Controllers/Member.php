@@ -166,7 +166,7 @@ class Member extends BaseController {
 				filter_var($email, FILTER_VALIDATE_EMAIL) ? $param['email'] = $email : $param['email'] = 'none';
 				$this->request->getPost('arrl') == 'on' ? $param['arrl_mem'] = 'TRUE' : $param['arrl_mem'] = 'FALSE';
 				$this->request->getPost('dir_ok') == 'on' ? $param['ok_mem_dir'] = 'TRUE' : $param['ok_mem_dir'] = 'FALSE';
-				$this->mem_mod->edit_fam_mem($param);
+				$ret_str = $this->mem_mod->edit_fam_mem($param);
 
 				$data['msg'] ='';
 				$flag = TRUE;
@@ -178,6 +178,11 @@ class Member extends BaseController {
 
 				if(!$h_phone['flag']) {
 					$data['msg'] .= '<p class="text-danger fw-bold">Other phone number was in wrong format and was not saved.</p>';
+					$flag = FALSE;
+				}
+
+				if($ret_str != NULL) {
+					$data['msg'] .= $ret_str;
 					$flag = FALSE;
 				}
 
