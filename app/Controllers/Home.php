@@ -15,7 +15,12 @@ class Home extends BaseController {
   }
 
   public function contact() {
-    echo view('template/header');
+    if(!($this->login_mod->is_logged())) {
+      echo view('template/header');
+    }
+    else {
+      echo view('template/header_' . $this->login_mod->get_cur_user()['controller']);
+    }
     echo view('public/contact_view');
     echo view('template/footer');
   }
@@ -307,7 +312,7 @@ class Home extends BaseController {
     	public function logout() {
     		$this->login_mod->logout();
     		echo view('template/header');
-    		echo view('public/main_view', array('msg' => '<p class="text-success">You have succesfuly logged out. Thank you and have a great day!<br><small>For your security make sure you close out your browser</small></p>'));
+    		echo view('public/main_view', array('msg' => '<p class="text-success lead"><i class="bi bi-check-circle"></i> You have succesfuly logged out. Thank you and have a great day!</p>'));
     		echo view('template/footer');
     	}
 

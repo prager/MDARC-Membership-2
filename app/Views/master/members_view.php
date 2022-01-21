@@ -191,7 +191,12 @@
                            }?>
                          </td>
                           <td class="text-center">
+                            <?php if(($mem['id_mem_types'] == 1) || ($mem['id_mem_types'] == 2)) { ?>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#purgeMem<?php echo $mem['id']; ?>"><i class="bi bi-trash"></i></a>
+                          <?php }
+                                  else { ?>
+                                  N/A
+                            <?php }?>
                             <?php include 'mod_purge_mem.php'; ?>
                           </td>
                         </tr>

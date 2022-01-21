@@ -11,12 +11,8 @@ class Member extends BaseController {
 	public function index() {
     if($this->check_mem()) {
 	  	echo view('template/header_member.php');
-			$data['user'] = $this->login_mod->get_cur_user();
-			$mem_arr = $this->mem_mod->get_mem($data['user']['id_user']);
-			$data['primary'] = $mem_arr['primary'];
-			$data['fam_arr'] = $this->mem_mod->get_fam_mems($data['user']['id_user']);
-			$data['member_types'] = $this->master_mod->get_member_types();
-			$data['lic'] = $this->data_mod->get_lic();
+			$data = $this->get_mem_arr();
+			$data['msg'] = '';
 			echo view('members/member_view.php', $data);
 	   }
     else {
@@ -27,6 +23,16 @@ class Member extends BaseController {
       echo view('status/status_view.php', $data);
     }
 		echo view('template/footer.php');
+	}
+
+	private function get_mem_arr() {
+		$data['user'] = $this->login_mod->get_cur_user();
+		$mem_arr = $this->mem_mod->get_mem($data['user']['id_user']);
+		$data['primary'] = $mem_arr['primary'];
+		$data['fam_arr'] = $this->mem_mod->get_fam_mems($data['user']['id_user']);
+		$data['member_types'] = $this->master_mod->get_member_types();
+		$data['lic'] = $this->data_mod->get_lic();
+		return $data;
 	}
 
 /**

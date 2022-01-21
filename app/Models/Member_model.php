@@ -208,6 +208,7 @@ class Member_model extends Model {
       $elem['pay_date'] = date('Y-m-d', $member->paym_date);
       $elem['pay_date_file'] = date('Y/m/d', $member->paym_date);
       $elem['silent_date'] = date('Y-m-d', $member->silent_date);
+      $elem['parent_primary'] = $member->parent_primary;
       $member->mem_since == NULL ? $elem['mem_since'] = 'N/A' : $elem['mem_since'] = $member->mem_since;
       $member->email == NULL ? $elem['email'] = 'N/A' : $elem['email'] = $member->email;
       $elem['ok_mem_dir'] = $member->ok_mem_dir;
@@ -300,6 +301,9 @@ class Member_model extends Model {
 
   /**
   * Checks for second duplicate family member when editing
+  * The difference from the ordinary check_dup is
+  * the check for the callsign where id != id_members
+  * and count results are > 1
   */
   private function check_second_dup($param) {
 
@@ -326,25 +330,34 @@ class Member_model extends Model {
     if($sum == 0) {
       $builder->resetQuery();
       $builder->where('callsign', $param['callsign']);
-      $builder->countAllResults() > 1 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
+      $builder->where('id_members!=', $param['id']);
+      $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
     }
 
     return $retarr;
   }
 
   public function edit_fam_mem($param) {
-// figure parent_primary
+
+    $db      = \Config\Database::connect();
+    $builder = $db->table('tMembers');
+    $builder->where('id_members', $param['id']);
+    $mem = $builder->get()->getRow();
+
+    $orig_mem = $this->get_fam_mem($param['id']);
+
     $id = $param['id'];
     unset($param['id']);
 
-//figure parent_primary for the duplicate check
-    $db      = \Config\Database::connect();
-    $builder = $db->table('tMembers');
-    $builder->where('id_members', $id);
-    $member = $builder->get()->getRow();
-    $param['parent_primary'] = $member->parent_primary;
+    $builder->resetQuery();
+    $builder->update($param, ['id_members' => $id]);
+    $param['id'] = $id;
 
+// Check for dup entry (need parent_primary for that)
+    $param['parent_primary'] = $mem->parent_primary;
+    $param['id'] = $id;
     $dups = $this->check_second_dup($param);
+
     $flag = TRUE;
     $retval = '';
 
@@ -358,9 +371,18 @@ class Member_model extends Model {
       $flag = FALSE;
     }
 
-    if($flag) {
+// In case we have exact duplicate fam member or duplicate callsign roll the changes back to the original
+    if(!$flag) {
+      $id = $param['id'];
+      unset($orig_mem['id']);
+      unset($orig_mem['carrier']);
+      unset($orig_mem['dir']);
+      unset($orig_mem['arrl']);
+      unset($orig_mem['phone_unlisted']);
+      unset($orig_mem['pay_date_file']);
+      unset($orig_mem['silent']);
       $builder->resetQuery();
-      $builder->update($param, ['id_members' => $id]);
+      $builder->update($orig_mem, ['id_members' => $id]);
     }
 
     $db->close();

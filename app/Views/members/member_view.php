@@ -1,35 +1,101 @@
   <!--Learn Sections-->
         <section id="learn" class="p-5">
             <div class="container">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-md py-5">
-                        <img src="/img/control.svg" class="img-fluid w-75 d-none d-sm-block" alt="">
-                    </div>
-                    <div class="col-md p-5">
-                        <h2>Welcome Member: <?php echo $primary['fname'] . ' ' . $primary['lname']; ?></h2>
-                        <p class="lead">Callsign: <?php echo $primary['callsign']; ?></p>
-                        <p>License Type: <?php echo $primary['license']; ?><br>
-                        ARRL Member: <?php if(strtoupper($primary['arrl']) == 'TRUE') {?>
-                          <input class="form-check-input" type="checkbox" name="arrl" checked disabled>
-                        <?php }
-                              else { ?>
-                          <input class="form-check-input" type="checkbox" name="arrl" disabled>
-                        <?php } ?><br>
-                        List in Directory OK: <?php if(strtoupper($primary['ok_mem_dir']) == 'TRUE') {?>
-                          <input class="form-check-input" type="checkbox" name="dir_ok" checked disabled>
-                        <?php }
-                              else { ?>
-                          <input class="form-check-input" type="checkbox" name="dir_ok" disabled>
-                        <?php } ?><br>
-                        Last Payment: <?php echo $primary['pay_date']; ?><br>
-                        Current Year: <?php echo $primary['cur_year']; ?><br>
-                        Email: <?php echo $primary['email']; ?><br>
-                        Cell Phone: <?php echo $primary['w_phone'] . ' / Other Phone: ' . $primary['h_phone']; ?><br>
-                        Address:<br> <?php echo $primary['address']; ?><br>
-                        <?php echo $primary['city'] . ', ' . $primary['state'] . ' ' . $primary['zip']; ?>
-                        </p>
-                        <?php if($fam_arr['fam_flag']) {?>
-                          <p class="lh-1">Family Members:<br><br>
+              <div class="row pt-5">
+                <div class="col-lg-5 offset-lg-2">
+                  <p class="lead fw-bold text-warning">MDARC Member Data For:</p>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg offset-lg-2">
+                      <h2><?php echo $primary['fname'] . ' ' . $primary['lname']; ?></h2>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6 offset-lg-2">
+                    <p class="lead">Callsign: <?php echo $primary['callsign'] . ' / ' . 'Member ID: ' . $primary['id_members']; ?></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Membership Type: <?php echo $primary['mem_type']; ?></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">ARRL Member:
+                      <?php if(strtoupper($primary['arrl']) == 'TRUE') {?>
+                        <label class="lead">YES &nbsp; </label>
+                        <input class="form-check-input" type="checkbox" name="arrl" checked disabled>
+                      <?php }
+                            else { ?>
+                        <label class="lead">NO &nbsp; </label>
+                        <input class="form-check-input" type="checkbox" name="arrl" disabled>
+                      <?php } ?>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Directory Listing:
+                      <?php if(strtoupper($primary['dir_ok']) == 'TRUE') {?>
+                        <label class="lead">YES &nbsp; </label>
+                        <input class="form-check-input" type="checkbox" name="arrl" checked disabled>
+                      <?php }
+                            else { ?>
+                        <label class="lead">NO &nbsp; </label>
+                        <input class="form-check-input" type="checkbox" name="arrl" disabled>
+                      <?php } ?>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Last Payment: <?php echo $primary['pay_date']; ?></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Current Year: <?php echo $primary['cur_year']; ?></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Email: <?php echo $primary['email']; ?></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-8 offset-lg-2">
+                    <p class="lead">Cell Phone: <?php echo $primary['w_phone'] . ' / Other Phone: ' . $primary['h_phone']; ?></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Address:<br> <?php echo $primary['address'] . ', ' . $primary['city'] . ', ' . $primary['state'] . ' ' . $primary['zip']; ?></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead"></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <?php if($fam_arr['fam_flag']) {?>
+                          <p>Family Members:</p>
                           <span >  <?php
                               foreach($fam_arr['fam_mems'] as $mem) {
                                 echo $mem['mem_type'] . ': ' . $mem['fname'] . ' ' . $mem['lname'] . '<br>';
@@ -37,11 +103,14 @@
                           </span>
                         <?php } ?>
                         </p>
-                        <a href="<?php echo base_url() . '/index.php/pers-data'; ?>" class="btn btn-light my-3"><i class="bi bi-chevron-right"></i> Edit Your Data </a>
-                    </div>
+                  </div>
                 </div>
-            </div>
-        </section>
-        <section class="p-5">
 
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <a href="<?php echo base_url() . '/index.php/pers-data'; ?>" class="btn btn-light my-3"><i class="bi bi-chevron-right"></i> Edit Your Member Data </a>
+                  </div>
+                </div>
+
+              </div>
         </section>

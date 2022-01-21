@@ -339,6 +339,8 @@ class Staff_model extends Model {
     $builder = $db->table('tMembers');
     $builder->resetQuery();
     $builder->update(array('cur_year' => 99), ['id_members' => $id]);
+    $builder->resetQuery();
+    $builder->update(array('cur_year' => 99), ['parent_primary' => $id]);
   }
 
   /**
@@ -350,6 +352,8 @@ class Staff_model extends Model {
     $builder = $db->table('tMembers');
     $builder->resetQuery();
     $builder->update(array('cur_year' => date('Y', time())), ['id_members' => $id]);
+    $builder->resetQuery();
+    $builder->update(array('cur_year' => date('Y', time())), ['parent_primary' => $id]);
   }
 
 /**
