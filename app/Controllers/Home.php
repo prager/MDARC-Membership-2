@@ -304,8 +304,7 @@ class Home extends BaseController {
       }
     	echo view('template/footer');
     }
-
-
+    
     /**
     * Self-explanatory: calls the logout function from Loging_model
     */

@@ -8,7 +8,7 @@
             </div>
             <div class="col-md p-5">
                 <h2>Status Page</h2>
-                <h4 class="pt-3"><?php echo $title; ?></h4>
+                <h4 class="pt-3 text-primary"><?php echo $title; ?></h4>
                 <p><?php echo $msg; ?></p>
                 <a href="<?php echo base_url(); ?>" class="btn btn-light" ><i class="bi bi-chevron-right"></i> Go To Home Page</a>
             </div>

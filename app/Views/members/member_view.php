@@ -18,6 +18,26 @@
                 </div>
                 <div class="row">
                   <div class="col-lg-5 offset-lg-2">
+                    <?php if($primary['cur_year'] < date('Y', time())) {?>
+                      <p class="lead text-danger fw-bold">Current Year: <?php echo $primary['cur_year']; ?> --> Not Current!</p>
+                    <?php }
+                    else { ?>
+                      <p class="lead">Current Year: <?php echo $primary['cur_year']; ?></p>
+                    <?php }?>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <?php if($primary['cur_year'] < date('Y', time())) {?>
+                      <p class="lead text-danger fw-bold">Last Payment: <?php echo $primary['pay_date']; ?> --> Payment Overdue!</p>
+                    <?php }
+                    else { ?>
+                      <p class="lead">Last Payment: <?php echo $primary['pay_date']; ?></p>
+                    <?php }?>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
                     <p class="lead">Membership Type: <?php echo $primary['mem_type']; ?></p>
                   </div>
                 </div>
@@ -49,19 +69,6 @@
                     </p>
                   </div>
                 </div>
-
-                <div class="row">
-                  <div class="col-lg-5 offset-lg-2">
-                    <p class="lead">Last Payment: <?php echo $primary['pay_date']; ?></p>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-5 offset-lg-2">
-                    <p class="lead">Current Year: <?php echo $primary['cur_year']; ?></p>
-                  </div>
-                </div>
-
                 <div class="row">
                   <div class="col-lg-5 offset-lg-2">
                     <p class="lead">Email: <?php echo $primary['email']; ?></p>
