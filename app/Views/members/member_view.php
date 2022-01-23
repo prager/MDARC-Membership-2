@@ -13,7 +13,15 @@
                 </div>
                 <div class="row">
                   <div class="col-lg-6 offset-lg-2">
+                    <?php if($msg != NULL) {?>
+                    <p><?php echo $msg; ?></p>
+                  <?php }?>
                     <p class="lead">Callsign: <?php echo $primary['callsign'] . ' / ' . 'Member ID: ' . $primary['id_members']; ?></p>
+                  </div>
+                </div>                
+                <div class="row">
+                  <div class="col-lg-5 offset-lg-2">
+                    <p class="lead">Membership Type: <?php echo $primary['mem_type']; ?></p>
                   </div>
                 </div>
                 <div class="row">
@@ -30,15 +38,11 @@
                   <div class="col-lg-5 offset-lg-2">
                     <?php if($primary['cur_year'] < date('Y', time())) {?>
                       <p class="lead text-danger fw-bold">Last Payment: <?php echo $primary['pay_date']; ?> --> Payment Overdue!</p>
+                      <p>Click on <a href="https://events.r20.constantcontact.com/register/eventReg?oeidk=a07eixcb3jrd9626c70&oseq=&c=&ch=" target="_blank" class="text-decoration-none">Membership Renewal</a> link to renew your membership.</p>
                     <?php }
                     else { ?>
                       <p class="lead">Last Payment: <?php echo $primary['pay_date']; ?></p>
                     <?php }?>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-5 offset-lg-2">
-                    <p class="lead">Membership Type: <?php echo $primary['mem_type']; ?></p>
                   </div>
                 </div>
                 <div class="row">

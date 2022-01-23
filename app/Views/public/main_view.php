@@ -14,7 +14,7 @@
             <div>
                 <h1>MDARC <span class="text-warning">Membership Portal</span> </h1>
                 <p class="my-4">
-                  <span class="text-danger">This website is in its early stage of development</span>. It is intended for MDARC members to check on their membership status and later will provide payment gateway, among others. In case anyone would like to participate in the portal testing, then, please, provide your MDARC registered email and submit below.
+                  <span class="text-danger">This website is in its early stage of development</span>. It is intended for MDARC (<a href="http://mdarc.org" target="_blank" class="text-decoration-none">Mount Diablo Amateur Radio Club</a>) members to check on their membership status and later will provide payment gateway, among other additional features. In case anyone would like to participate in the portal testing, then, please, provide your MDARC registered email and submit below.
                 </p>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login"> User Login </button>
             </div>

@@ -101,8 +101,6 @@ class Member_model extends Model {
   }
 
   public function update_mem($param) {
-    $id = $param['id'];
-    unset($param['id']);
     $db      = \Config\Database::connect();
     $builder = $db->table('tMembers');
     $builder->resetQuery();
@@ -110,6 +108,12 @@ class Member_model extends Model {
     $h_phone = $this->do_phone($param['h_phone']);
     $param['w_phone'] = $w_phone['phone'];
     $param['h_phone'] = $h_phone['phone'];
+    $callsign_arr = $this->do_callsign($param);
+    $param['callsign'] = $callsign_arr['callsign'];
+    $email_arr = $this->do_email($param);
+    $param['email'] = $email_arr['email'];
+    $id = $param['id'];
+    unset($param['id']);
     $builder->update($param, ['id_members' => $id]);
     $builder->resetQuery();
     $builder->where('id_members', $id);
@@ -130,14 +134,30 @@ class Member_model extends Model {
     }
 
     $retarr = array();
-
+    $retarr['msg'] = array();
+    $retarr['flag'] = TRUE;
+    $retarr['msg']['cell'] = NULL;
     if(!$w_phone['flag']) {
-      $retarr['cell'] = '<p class="text-danger fw-bold">Cell number entered in wrong format and was not saved. </p>';
+      $retarr['msg']['cell'] = 'Cell number entered in wrong format and was not saved.';
+      $retarr['flag'] = FALSE;
+    }
+     $retarr['msg']['phone'] = NULL;
+     if(!$h_phone['flag']) {
+       $retarr['msg']['phone'] = 'Other phone number entered in wrong format and was not saved.';
+       $retarr['flag'] = FALSE;
+     }
+
+    $retarr['msg']['email'] = NULL;
+    if(!$email_arr['flag']) {
+      $retarr['msg']['email'] = 'You entered an email that is already in database. Please, enter a different email.';
+      $retarr['flag'] = FALSE;
     }
 
-     if(!$h_phone['flag']) {
-       $retarr['phone'] = '<p class="text-danger fw-bold">Other phone number entered in wrong format and was not saved. </p>';
-     }
+   $retarr['msg']['callsign'] = NULL;
+   if(!$callsign_arr['flag']) {
+     $retarr['msg']['callsign'] = 'You entered a callsign that is already in database.';
+     $retarr['flag'] = FALSE;
+   }
 
     return $retarr;
   }
@@ -231,12 +251,17 @@ class Member_model extends Model {
     $flag = TRUE;
 
     if($dups['fam_mem']) {
-      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
+      $retval = '<p class="text-danger fw-bold">This family member already exists in database. No data was saved</p>';
       $flag = FALSE;
     }
 
     if($dups['callsign']) {
-      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This callsign already exists in database.</p>' : $retval .= '<p class="text-danger fw-bold">This callsign already exists in database.</p>';
+      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This callsign '. $param['callsign'] . ' already exists in database. No data was saved.</p>' : $retval .= '<p class="text-danger fw-bold">This callsign '. $param['callsign'] . ' already exists in database. No data was saved.';
+      $flag = FALSE;
+    }
+
+    if($dups['email']) {
+      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This email '. $param['email'] . ' already exists in database. No data was saved.</p>' : $retval .= '<p class="text-danger fw-bold">This email '. $param['email'] . ' already exists in database. No data was saved.';
       $flag = FALSE;
     }
 
@@ -288,23 +313,30 @@ class Member_model extends Model {
     if(strtolower($param['callsign']) == 'none'){$sum++;}
     if(strtolower($param['callsign']) == 'swl'){$sum++;}
 
-    //if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
+//if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
     if($sum == 0) {
       $builder->resetQuery();
       $builder->where('callsign', $param['callsign']);
       $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
     }
 
+//check for duplicate email
+    $retarr['email'] = FALSE;
+    $builder->resetQuery();
+    $builder->where('email', $param['email']);
+    $builder->where('parent_primary!=', $param['parent_primary']);
+    $builder->where('id_members!=', $param['parent_primary']);
+    $builder->countAllResults() > 0 ? $retarr['email'] = TRUE : $retarr['email'] = FALSE;
 
     return $retarr;
   }
 
-  /**
-  * Checks for second duplicate family member when editing
-  * The difference from the ordinary check_dup is
-  * the check for the callsign where id != id_members
-  * and count results are > 1
-  */
+/**
+* Checks for second duplicate family member when editing
+* The difference from the ordinary check_dup is
+* the check for the callsign where id != id_members
+* and count results are > 1
+*/
   private function check_second_dup($param) {
 
     $db      = \Config\Database::connect();
@@ -326,13 +358,21 @@ class Member_model extends Model {
     if(strtolower($param['callsign']) == 'none'){$sum++;}
     if(strtolower($param['callsign']) == 'swl'){$sum++;}
 
-    //if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
+//if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
     if($sum == 0) {
       $builder->resetQuery();
       $builder->where('callsign', $param['callsign']);
       $builder->where('id_members!=', $param['id']);
       $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
     }
+
+//check for duplicate email
+        $retarr['email'] = FALSE;
+        $builder->resetQuery();
+        $builder->where('email', $param['email']);
+        $builder->where('parent_primary!=', $param['parent_primary']);
+        $builder->where('id_members!=', $param['parent_primary']);
+        $builder->countAllResults() > 0 ? $retarr['email'] = TRUE : $retarr['email'] = FALSE;
 
     return $retarr;
   }
@@ -362,12 +402,17 @@ class Member_model extends Model {
     $retval = '';
 
     if($dups['fam_mem']) {
-      $retval = '<p class="text-danger fw-bold">This family member already exists in database.</p>';
+      $retval = 'This family member already exists in database.';
       $flag = FALSE;
     }
 
     if($dups['callsign']) {
-      $retval == NULL ? $retval = '<p class="text-danger fw-bold">This callsign already exists in database.</p>' : $retval .= '<p class="text-danger fw-bold">This callsign already exists in database.</p>';
+      $retval == NULL ? $retval = '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.' : $retval .= '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.';
+      $flag = FALSE;
+    }
+
+    if($dups['email']) {
+      $retval == NULL ? $retval = '<br>This email '. $param['email'] . ' already exists in database. No data was saved.' : $retval .= '<br>This email '. $param['email'] . ' already exists in database. No data was saved.';
       $flag = FALSE;
     }
 
@@ -407,6 +452,47 @@ class Member_model extends Model {
       $param = array('id_mem_types' => 1, 'mem_type' => 'Individual');
       $builder->update($param, ['id_members' => $id_prim]);
     }
+  }
+
+  public function do_email($param) {
+    $db      = \Config\Database::connect();
+    $builder = $db->table('tMembers');
+    $builder->where('id_members!=', $param['id']);
+    $builder->where('parent_primary!=', $param['id']);
+    $builder->where('email', $param['email']);
+    $retarr = array();
+    if($builder->countAllResults() > 0) {
+      $builder->resetQuery();
+      $builder->where('id_members', $param['id']);
+      $retarr['email'] = $builder->get()->getRow()->email;
+      $retarr['flag'] = FALSE;
+    }
+    else {
+      $retarr['email'] = $param['email'];
+      $retarr['flag'] = TRUE;
+    }
+    $db->close();
+    return $retarr;
+  }
+
+  public function do_callsign($param) {
+    $db      = \Config\Database::connect();
+    $builder = $db->table('tMembers');
+    $builder->where('id_members!=', $param['id']);
+    $builder->where('callsign', $param['callsign']);
+    $retarr = array();
+    if($builder->countAllResults() > 0) {
+      $builder->resetQuery();
+      $builder->where('id_members', $param['id']);
+      $retarr['callsign'] = $builder->get()->getRow()->callsign;
+      $retarr['flag'] = FALSE;
+    }
+    else {
+      $retarr['callsign'] = $param['callsign'];
+      $retarr['flag'] = TRUE;
+    }
+    $db->close();
+    return $retarr;
   }
 
   /**

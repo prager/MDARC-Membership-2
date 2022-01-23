@@ -5,11 +5,9 @@
       <div class="col offset-lg-1">
         <h2>Edit Data for: <?php echo $mem['fname'] . ' ' . $mem['lname']; ?></h2>
         <small>(* marks required fields)</small>
-        <?php
-          if($msg != "") {
-            echo '<p class="text-danger">' . $msg . '</p>';
-          }
-         ?>
+          <?php if($msg != NULL) {?>
+            <?php echo $msg; ?>
+          <?php }?>
       </div>
     </div>
     <form action="<?php echo base_url() . '/index.php/update-mem/'. $mem['id_members']; ?>" method="post">
@@ -64,24 +62,60 @@
       </select>
     </div>
     <div class="col-lg-4 pt-1">
-      <label for="callsign">Callsign</label>
-      <input type="text" class="form-control" id="callsign" name="callsign" value="<?php echo $mem['callsign']; ?>">
+      <?php if($errors['callsign'] == NULL) {?>
+        <label for="callsign">Callsign</label>
+        <input type="text" class="form-control" id="callsign" name="callsign" value="<?php echo $mem['callsign']; ?>">
+      <?php }
+      else {?>
+        <label for="callsign">Callsign</label>
+        <input type="text" class="form-control is-invalid" id="callsign" name="callsign" aria-describedby="callsignFeedback" value="<?php echo $mem['callsign']; ?>">
+        <div id="callsignFeedback" class="invalid-feedback">
+          <?php echo $errors['callsign']; ?>
+        </div>
+      <?php }?>
     </div>
   </div>
   <div class="row pt-2">
     <div class="col-lg-4 offset-lg-1 pt-1">
-      <label for="w_phone">Cell Phone</label>
-      <input type="text" class="form-control" id="w_phone" name="w_phone" value="<?php echo $mem['w_phone']; ?>">
+      <?php if($errors['cell'] == NULL) {?>
+          <label for="w_phone">Cell Phone</label>
+          <input type="text" class="form-control" id="w_phone" name="w_phone" value="<?php echo $mem['w_phone']; ?>">
+      <?php }
+      else {?>
+          <label for="w_phone">Cell Phone</label>
+          <input type="text" class="form-control is-invalid" id="w_phone" name="w_phone" aria-describedby="w_phoneFeedback">
+          <div id="w_phoneFeedback" class="invalid-feedback">
+            Please provide a valid phone number with 10 digits
+          </div>
+      <?php }?>
     </div>
     <div class="col-lg-4 pt-1">
-      <label for="h_phone">Other Phone</label>
-      <input type="text" class="form-control" id="h_phone" name="h_phone" value="<?php echo $mem['h_phone']; ?>">
+      <?php if($errors['phone'] == NULL) {?>
+          <label for="h_phone">Other Phone</label>
+          <input type="text" class="form-control" id="h_phone" name="h_phone" value="<?php echo $mem['h_phone']; ?>">
+      <?php }
+      else {?>
+          <label for="h_phone">Other Phone</label>
+          <input type="text" class="form-control is-invalid" id="h_phone" name="h_phone" aria-describedby="h_phoneFeedback">
+          <div id="h_phoneFeedback" class="invalid-feedback">
+            Please provide a valid phone number with 10 digits
+          </div>
+      <?php }?>
     </div>
   </div>
   <div class="row pt-2">
     <div class="col-lg-4 offset-lg-1 pt-1">
-      <label for="email">Email *</label>
-      <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>" required>
+      <?php if($errors['email'] == NULL) {?>
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="<?php echo $mem['email']; ?>" required>
+      <?php }
+      else {?>
+        <label for="email">Email</label>
+        <input type="email" class="form-control is-invalid" id="email" name="email" aria-describedby="h_phoneFeedback" required>
+        <div id="emailFeedback" class="invalid-feedback">
+          The email you provided is already in the database
+        </div>
+      <?php }?>
     </div>
   </div>
   <div class="row pt-2">
@@ -277,7 +311,7 @@
         </div>
       </div>
     <?php } ?>
-    <div class="row pt-3">
+    <div class="row pt-3 pb-5">
       <div class="col-lg-4 offset-lg-1">
         <p><a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#addFamMem">Add Family Member</a></p>
         <?php include 'modal_update_mem.php'; ?>
@@ -286,11 +320,5 @@
       </div>
     </div>
     </form>
-  </div>
-</section>
-
-<section id="learn" class="p-5 bg-light text-light">
-  <div class="container">
-
   </div>
 </section>
