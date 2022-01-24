@@ -155,10 +155,14 @@ class Member_model extends Model {
 
    $retarr['msg']['callsign'] = NULL;
    if(!$callsign_arr['flag']) {
-     $retarr['msg']['callsign'] = 'You entered a callsign that is already in database.';
+     if($callsign_arr['lic_stat'] != NULL) {
+       $retarr['msg']['callsign'] = 'No callsign for SWL license type';
+     }
+     else {
+       $retarr['msg']['callsign'] = 'You entered a callsign that is already in database.';
+     }
      $retarr['flag'] = FALSE;
    }
-
     return $retarr;
   }
 
@@ -366,6 +370,28 @@ class Member_model extends Model {
       $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
     }
 
+    $flag_call = 0;
+
+    if(strtolower($param['callsign']) == "none" && strtolower($param['license']) == 'swl') {
+      $flag_call++;
+    }
+
+    if(strtolower($param['callsign']) == "swl" && strtolower($param['license']) == 'swl') {
+      $flag_call++;
+    }
+
+    if((strlen($param['callsign']) == 0) && (strtolower($param['license']) == 'swl')) {
+      $flag_call++;
+    }
+    
+    $retarr['lic_stat'] = NULL;
+    if((strtolower($param['license']) == 'swl') && ($flag_call == 0)) {
+      //if((strlen($param['callsign']) > 0) || ($flag_call > 0)) { - doesn't work!!!!
+        $param['callsign'] = 'none';
+        $retarr['lic_stat'] = 'Callsign changed to "none" because of Lic Type "SWL"';
+        $retarr['callsign'] = FALSE;
+      }
+
 //check for duplicate email
         $retarr['email'] = FALSE;
         $builder->resetQuery();
@@ -409,6 +435,10 @@ class Member_model extends Model {
     if($dups['callsign']) {
       $retval == NULL ? $retval = '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.' : $retval .= '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.';
       $flag = FALSE;
+    }
+
+    if($dups['lic_stat'] != NULL) {
+      $retval == NULL ? $retval = '<br>For license type "SWL" there cannot be a callsign '. $param['callsign'] . ' No data was saved.' : $retval .= '<br>For license type "SWL" there cannot be a callsign '. $param['callsign'] . '  No data was saved.';
     }
 
     if($dups['email']) {
@@ -482,9 +512,6 @@ class Member_model extends Model {
     $builder->where('callsign', $param['callsign']);
     $retarr = array();
     if($builder->countAllResults() > 0) {
-      $builder->resetQuery();
-      $builder->where('id_members', $param['id']);
-      $retarr['callsign'] = $builder->get()->getRow()->callsign;
       $retarr['flag'] = FALSE;
     }
     else {
@@ -492,6 +519,35 @@ class Member_model extends Model {
       $retarr['flag'] = TRUE;
     }
     $db->close();
+
+    $flag_call = 0;
+
+    if(strtolower($param['callsign']) == "none" && $param['license'] == 'SWL') {
+      $flag_call++;
+    }
+
+    if(strtolower($param['callsign']) == "swl" && $param['license'] == 'SWL') {
+      $flag_call++;
+    }
+
+    if((strlen($param['callsign']) == 0) && ($param['license'] == 'SWL')) {
+      $flag_call++;
+    }
+
+    $retarr['lic_stat'] = NULL;
+    if((strtolower($param['license']) == 'swl') && ($flag_call == 0)) {
+      //if((strlen($param['callsign']) > 0) || ($flag_call > 0)) { - doesn't work!!!!
+        $param['callsign'] = 'none';
+        $retarr['lic_stat'] = 'Callsign changed to "none" because of Lic Type "SWL"';
+        $retarr['flag'] = FALSE;
+      }
+
+    if($retarr['flag'] == FALSE) {
+      $builder->resetQuery();
+      $builder->where('id_members', $param['id']);
+      $retarr['callsign'] = $builder->get()->getRow()->callsign;
+    }
+
     return $retarr;
   }
 
