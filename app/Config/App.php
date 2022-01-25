@@ -23,7 +23,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'https://mdarc-dev.jlkconsulting.info';
+    public $baseURL = 'https://mdarc.jlkconsulting.info';
 
     /**
      * --------------------------------------------------------------------------

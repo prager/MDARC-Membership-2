@@ -112,26 +112,6 @@ class Member_model extends Model {
     $param['callsign'] = $callsign_arr['callsign'];
     $email_arr = $this->do_email($param);
     $param['email'] = $email_arr['email'];
-    $id = $param['id'];
-    unset($param['id']);
-    $builder->update($param, ['id_members' => $id]);
-    $builder->resetQuery();
-    $builder->where('id_members', $id);
-    $mem_obj = $builder->get()->getRow();
-    $id_usr = $mem_obj->id_users;
-    if($id_usr != 0) {
-      $usr_array = array(
-        'fname' => $mem_obj->fname,
-        'lname' => $mem_obj->lname,
-        'callsign' => $mem_obj->callsign,
-        'street' => $mem_obj->address,
-        'email' => $mem_obj->email,
-        'phone' => $mem_obj->w_phone
-      );
-      $builder = $db->table('users');
-      $builder->resetQuery();
-      $builder->update($usr_array, ['id_user' => $id_usr]);
-    }
 
     $retarr = array();
     $retarr['msg'] = array();
@@ -155,14 +135,31 @@ class Member_model extends Model {
 
    $retarr['msg']['callsign'] = NULL;
    if(!$callsign_arr['flag']) {
-     if($callsign_arr['lic_stat'] != NULL) {
-       $retarr['msg']['callsign'] = 'No callsign for SWL license type';
-     }
-     else {
-       $retarr['msg']['callsign'] = 'You entered a callsign that is already in database.';
-     }
+     $retarr['msg']['callsign'] = $callsign_arr['lic_stat'];
      $retarr['flag'] = FALSE;
    }
+
+    $id = $param['id'];
+    unset($param['id']);
+    $builder->update($param, ['id_members' => $id]);
+    $builder->resetQuery();
+    $builder->where('id_members', $id);
+    $mem_obj = $builder->get()->getRow();
+    $id_usr = $mem_obj->id_users;
+    if($id_usr != 0) {
+      $usr_array = array(
+        'fname' => $mem_obj->fname,
+        'lname' => $mem_obj->lname,
+        'callsign' => $mem_obj->callsign,
+        'street' => $mem_obj->address,
+        'email' => $mem_obj->email,
+        'phone' => $mem_obj->w_phone
+      );
+      $builder = $db->table('users');
+      $builder->resetQuery();
+      $builder->update($usr_array, ['id_user' => $id_usr]);
+    }
+
     return $retarr;
   }
 
@@ -363,11 +360,15 @@ class Member_model extends Model {
     if(strtolower($param['callsign']) == 'swl'){$sum++;}
 
 //if(($param['callsign'] != '') || (strtolower($param['callsign']) != 'none') || (strtolower($param['callsign']) != 'swl')) {
+    $retarr['lic_stat'] = '';
     if($sum == 0) {
       $builder->resetQuery();
       $builder->where('callsign', $param['callsign']);
       $builder->where('id_members!=', $param['id']);
-      $builder->countAllResults() > 0 ? $retarr['callsign'] = TRUE : $retarr['callsign'] = FALSE;
+      if($builder->countAllResults() > 0) {
+        $retarr['callsign'] = TRUE;
+        $retarr['lic_stat'] = 'Duplicate callsign.';
+      }
     }
 
     $flag_call = 0;
@@ -383,22 +384,41 @@ class Member_model extends Model {
     if((strlen($param['callsign']) == 0) && (strtolower($param['license']) == 'swl')) {
       $flag_call++;
     }
-    
+
     $retarr['lic_stat'] = NULL;
     if((strtolower($param['license']) == 'swl') && ($flag_call == 0)) {
       //if((strlen($param['callsign']) > 0) || ($flag_call > 0)) { - doesn't work!!!!
         $param['callsign'] = 'none';
-        $retarr['lic_stat'] = 'Callsign changed to "none" because of Lic Type "SWL"';
-        $retarr['callsign'] = FALSE;
-      }
+        $retarr['lic_stat'] = 'No callsign allowed for Licence Type "SWL"';
+        $retarr['callsign'] = TRUE;
+    }
+
+// check for blank or "none" callsign
+    $flag_call = 0;
+    if(strtolower($param['callsign']) == "none") {
+      $flag_call++;
+    }
+    if($param['callsign'] == "") {
+      $flag_call++;
+    }
+
+    if(($param['license'] != 'SWL') && ($flag_call > 0)) {
+      $retarr['lic_stat'] = 'Please, enter a valid callsign';
+      $retarr['callsign'] = TRUE;
+    }
+
+    if((strlen($param['callsign']) < 4) && ($retarr['callsign'] == FALSE)) {
+      $retarr['lic_stat'] = 'Please, enter a valid callsign. It must be more than 3 characters long.';
+      $retarr['callsign'] = TRUE;
+    }
 
 //check for duplicate email
-        $retarr['email'] = FALSE;
-        $builder->resetQuery();
-        $builder->where('email', $param['email']);
-        $builder->where('parent_primary!=', $param['parent_primary']);
-        $builder->where('id_members!=', $param['parent_primary']);
-        $builder->countAllResults() > 0 ? $retarr['email'] = TRUE : $retarr['email'] = FALSE;
+    $retarr['email'] = FALSE;
+    $builder->resetQuery();
+    $builder->where('email', $param['email']);
+    $builder->where('parent_primary!=', $param['parent_primary']);
+    $builder->where('id_members!=', $param['parent_primary']);
+    $builder->countAllResults() > 0 ? $retarr['email'] = TRUE : $retarr['email'] = FALSE;
 
     return $retarr;
   }
@@ -433,12 +453,8 @@ class Member_model extends Model {
     }
 
     if($dups['callsign']) {
-      $retval == NULL ? $retval = '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.' : $retval .= '<br>This callsign '. $param['callsign'] . ' already exists in database. No data was saved.';
+      $retval == NULL ? $retval = $dups['lic_stat'] : $retval .= $dups['lic_stat'];
       $flag = FALSE;
-    }
-
-    if($dups['lic_stat'] != NULL) {
-      $retval == NULL ? $retval = '<br>For license type "SWL" there cannot be a callsign '. $param['callsign'] . ' No data was saved.' : $retval .= '<br>For license type "SWL" there cannot be a callsign '. $param['callsign'] . '  No data was saved.';
     }
 
     if($dups['email']) {
@@ -506,22 +522,17 @@ class Member_model extends Model {
   }
 
   public function do_callsign($param) {
-    $db      = \Config\Database::connect();
-    $builder = $db->table('tMembers');
-    $builder->where('id_members!=', $param['id']);
-    $builder->where('callsign', $param['callsign']);
+
     $retarr = array();
-    if($builder->countAllResults() > 0) {
-      $retarr['flag'] = FALSE;
-    }
-    else {
-      $retarr['callsign'] = $param['callsign'];
-      $retarr['flag'] = TRUE;
-    }
-    $db->close();
+
+    $retarr['flag'] = TRUE;
+
+    $retarr['lic_stat'] = NULL;
+    $retarr['callsign'] = $param['callsign'];
 
     $flag_call = 0;
 
+// check for SWL and filled callsign
     if(strtolower($param['callsign']) == "none" && $param['license'] == 'SWL') {
       $flag_call++;
     }
@@ -534,20 +545,40 @@ class Member_model extends Model {
       $flag_call++;
     }
 
-    $retarr['lic_stat'] = NULL;
     if((strtolower($param['license']) == 'swl') && ($flag_call == 0)) {
       //if((strlen($param['callsign']) > 0) || ($flag_call > 0)) { - doesn't work!!!!
-        $param['callsign'] = 'none';
-        $retarr['lic_stat'] = 'Callsign changed to "none" because of Lic Type "SWL"';
-        $retarr['flag'] = FALSE;
-      }
-
-    if($retarr['flag'] == FALSE) {
-      $builder->resetQuery();
-      $builder->where('id_members', $param['id']);
-      $retarr['callsign'] = $builder->get()->getRow()->callsign;
+      $retarr['lic_stat'] = 'There cannot be a call sign if License Type is "SWL"';
+      $retarr['flag'] = FALSE;
+      $retarr['callsign'] = '';
     }
 
+// check for blank or "none" callsign
+    $flag_call = 0;
+    if(strtolower($param['callsign']) == "none") {
+      $flag_call++;
+    }
+    if($param['callsign'] == "") {
+      $flag_call++;
+    }
+
+    if(($param['license'] != 'SWL') && ($flag_call > 0)) {
+      $retarr['lic_stat'] = 'Please, enter a valid callsign';
+      $retarr['flag'] = FALSE;
+      $retarr['callsign'] = '';
+    }
+
+    if($retarr['flag']) {
+      $db      = \Config\Database::connect();
+      $builder = $db->table('tMembers');
+      $builder->where('id_members!=', $param['id']);
+      $builder->where('callsign', $param['callsign']);
+      if(($builder->countAllResults() > 0) && ($param['license'] != 'SWL')) {
+        $retval['lic_stat'] = 'You entered a callsign that is already in database';
+        $retarr['flag'] = FALSE;
+        $retarr['callsign'] = '';
+      }
+      $db->close();
+    }
     return $retarr;
   }
 
